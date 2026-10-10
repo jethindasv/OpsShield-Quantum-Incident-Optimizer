@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opshield-quantum-optimizer"
+version = "0.1.0"
+description = "QAOA-based exploration of risk-aware IT incident remediation planning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "OpsShield Hackathon Team"}]
+dependencies = [
+  "qiskit==2.5.2",
+  "qiskit-aer==0.17.2",
+  "qiskit-ibm-runtime>=0.50",
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
