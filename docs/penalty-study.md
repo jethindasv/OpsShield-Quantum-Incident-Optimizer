@@ -50,3 +50,45 @@ These results do not establish a universally optimal penalty. More runs and addi
 ## Next experiment
 
 Test intermediate penalty values while keeping the QAOA settings fixed. Compare feasibility yield, optimal-solution frequency, and the gap to the exact classical optimum. Preserve each run's parameters and result files.
+
+| Metric | Penalty 45 | Penalty 90 | Penalty 120 | Penalty 144 |
+|---|---:|---:|---:|---:|
+| Feasible samples | 337 | 326 | 341 | 464 |
+| Total shots | 4096 | 4096 | 4096 | 4096 |
+| Feasibility yield | 8.23% | 7.96% | 8.33% | 11.33% |
+| Best feasible benefit | 28 | 28 | 28 | 28 |
+| Gap to exact optimum | 0 | 0 | 0 | 0 |
+
+
+Penalty 144 achieved the highest feasibility yield in the four
+seed-7 experiments. All four runs sampled the exact classical
+optimum, with benefit 28.
+
+This is preliminary evidence, not proof that penalty 144 is
+universally optimal. Additional random seeds are required to
+evaluate repeatability.
+
+Expected QUBO energies are not directly comparable across
+penalty values because the penalty changes the objective scale.
+
+## Repeatability study: penalty 144
+
+The penalty-144 configuration was evaluated with three random seeds,
+keeping QAOA depth 1, maxiter 60 and 4096 shots fixed.
+
+| Seed | Feasibility yield | Best feasible benefit |
+|---:|---:|---:|
+| 7 | 11.33% | 28 |
+| 21 | 6.8% | 28 |
+| 42 | 6.7% | 28 |
+
+All three runs sampled the exact classical optimum, with benefit 28.
+
+Feasibility yield varied by seed. Therefore, the earlier observation
+that penalty 144 performed best in the four-value seed-7 penalty sweep
+does not establish that it is the best setting in general.
+
+The results use synthetic incident-response data and a local
+statevector simulator. They do not demonstrate quantum advantage.
+Further evaluation would require more seeds, penalty settings and
+larger problem instances.
