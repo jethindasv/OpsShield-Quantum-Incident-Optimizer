@@ -1,0 +1,93 @@
+{
+  "project": "OpsShield \u2014 Quantum Incident Response Optimizer",
+  "dataset_note": "Synthetic demonstration data only; not production incident data.",
+  "algorithm": "QAOAAnsatz + StatevectorEstimator + StatevectorSampler",
+  "qaoa_reps": 1,
+  "qubo_penalty": 90.0,
+  "optimizer": "COBYLA",
+  "maxiter": 60,
+  "shots": 4096,
+  "seed": 7,
+  "num_qubits": 9,
+  "optimizer_success": true,
+  "optimizer_message": "Return from COBYLA because the trust region radius reaches its lower bound.",
+  "final_expected_qubo_energy": 1494.9891035194478,
+  "objective_evaluations": 19,
+  "total_shots": 4096,
+  "feasible_shots": 326,
+  "feasibility_yield": 0.07958984375,
+  "exact_classical_optimum": {
+    "bits": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      1
+    ],
+    "selected_ids": [
+      "A1",
+      "A3",
+      "A5",
+      "A6"
+    ],
+    "selected_names": [
+      "Restore WAN redundancy",
+      "Expand critical storage capacity",
+      "Patch externally exposed server",
+      "Repair monitoring coverage gap"
+    ],
+    "effort": 7,
+    "benefit": 28
+  },
+  "best_feasible_qaoa_sample": {
+    "bits": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      1
+    ],
+    "selected_ids": [
+      "A1",
+      "A3",
+      "A5",
+      "A6"
+    ],
+    "selected_names": [
+      "Restore WAN redundancy",
+      "Expand critical storage capacity",
+      "Patch externally exposed server",
+      "Repair monitoring coverage gap"
+    ],
+    "effort": 7,
+    "benefit": 28,
+    "feasible": true,
+    "bitstring": "000110101",
+    "shots": 5
+  },
+  "top_measured_bitstrings": {
+    "110001101": 62,
+    "011110110": 52,
+    "001110111": 49,
+    "011110101": 48,
+    "100000100": 47,
+    "110000001": 45,
+    "011110001": 44,
+    "001110100": 42,
+    "101110100": 41,
+    "011111101": 40,
+    "011111001": 38,
+    "111000001": 38
+  },
+  "artifacts": [
+    "qaoa_energy.png",
+    "sample_distribution.png"
+  ],
+  "limitations": [
+    "This is a small statevector-simulation experiment, not evidence of quantum advantage.",
+    "The exact classical baseline is the reference for solution quality on this instance.",
+    "The data and scores are synthetic and must not be interpreted as a real incident recommendation."
+  ]
+}
