@@ -54,3 +54,11 @@ def test_qubo_coefficients_have_expected_dimensions():
     assert offset > 0
     assert len(linear) == N_VARIABLES
     assert quadratic
+
+def test_qubo_penalty_is_configurable():
+    # A1 + A2 violates the first conflict rule.
+    # Its effort is 5; the slack bit of weight 2 fills the budget.
+    bits = [1, 1, 0, 0, 0, 0, 0, 1, 0]
+
+    assert evaluate_qubo(bits, penalty=45) == 26.0
+    assert evaluate_qubo(bits, penalty=144) == 125.0

@@ -5,6 +5,7 @@ import argparse
 import json
 
 from .model import ACTIONS, BUDGET, CONFLICTS, exact_classical_solution
+from .model import ACTIONS, BUDGET, CONFLICTS, PENALTY, exact_classical_solution
 from .solver import run_qaoa
 
 
@@ -29,6 +30,12 @@ def main() -> None:
     parser.add_argument("--maxiter", type=int, default=60, help="COBYLA objective-evaluation limit.")
     parser.add_argument("--shots", type=int, default=4096, help="Number of statevector samples.")
     parser.add_argument("--seed", type=int, default=7, help="Random seed for repeatability.")
+    parser.add_argument(
+    "--penalty",
+    type=float,
+    default=PENALTY,
+    help="QUBO constraint penalty coefficient.",
+)
     parser.add_argument("--output-dir", default="artifacts", help="Directory for JSON report and charts.")
     parser.add_argument("--skip-qaoa", action="store_true", help="Print model and exact baseline only.")
     args = parser.parse_args()
@@ -38,8 +45,9 @@ def main() -> None:
         return
 
     print("Running QAOA on the local statevector simulator...")
-    report = run_qaoa(reps=args.reps, maxiter=args.maxiter, shots=args.shots, seed=args.seed, output_dir=args.output_dir)
+    report = run_qaoa(reps=args.reps, maxiter=args.maxiter, shots=args.shots, seed=args.seed, output_dir=args.output_dir,penalty=args.penalty,)
     print("\nQAOA summary")
+    print(f"  QUBO penalty: {report['qubo_penalty']}")
     print(f"  Expected QUBO energy: {report['final_expected_qubo_energy']:.4f}")
     print(f"  Feasibility yield: {report['feasibility_yield']:.1%}")
     print(f"  Exact classical benefit: {report['exact_classical_optimum']['benefit']}")

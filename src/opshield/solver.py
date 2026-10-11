@@ -15,6 +15,7 @@ from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from .model import (
     ACTIONS,
     BUDGET,
+    PENALTY,
     N_ACTIONS,
     N_VARIABLES,
     exact_classical_solution,
@@ -48,6 +49,7 @@ def run_qaoa(
     shots: int = 4096,
     seed: int = 7,
     output_dir: str | Path = "artifacts",
+    penalty: float = PENALTY,
 ) -> dict[str, Any]:
     """Optimize and sample the OpsShield QUBO using QAOA on a local statevector simulator."""
     if reps < 1 or maxiter < 1 or shots < 1:
@@ -56,7 +58,7 @@ def run_qaoa(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    hamiltonian = qubo_to_hamiltonian()
+    hamiltonian = qubo_to_hamiltonian(penalty=penalty)
     ansatz = QAOAAnsatz(cost_operator=hamiltonian, reps=reps)
     estimator = StatevectorEstimator(seed=seed)
     rng = np.random.default_rng(seed)
@@ -131,6 +133,7 @@ def run_qaoa(
         "dataset_note": "Synthetic demonstration data only; not production incident data.",
         "algorithm": "QAOAAnsatz + StatevectorEstimator + StatevectorSampler",
         "qaoa_reps": reps,
+        "qubo_penalty": float(penalty),
         "optimizer": "COBYLA",
         "maxiter": maxiter,
         "shots": shots,

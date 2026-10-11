@@ -71,12 +71,16 @@ def is_action_selection_feasible(action_bits: Iterable[int]) -> bool:
     )
 
 
-def qubo_coefficients() -> tuple[float, np.ndarray, dict[tuple[int, int], float]]:
-    """Return offset, linear and quadratic terms for C(x)=c+sum(a_i*x_i)+sum(q_ij*x_i*x_j).
+def qubo_coefficients(
+    penalty: float = PENALTY,
+) -> tuple[float, np.ndarray, dict[tuple[int, int], float]]:
+    """Return offset, linear and quadratic coefficients for the QUBO.
 
-    C = -benefit + PENALTY * (effort + slack - budget)^2
-        + PENALTY * (x_A1*x_A2 + x_A3*x_A4).
-    Because variables are binary, x_i**2 == x_i, so this is a QUBO.
+    C(x) = -benefit
+           + penalty * (effort + slack - budget)^2
+           + penalty * (x_A1*x_A2 + x_A3*x_A4).
+
+    Because variables are binary, x_i**2 == x_i.
     """
     offset = 0.0
     linear = np.zeros(N_VARIABLES, dtype=float)
@@ -88,30 +92,40 @@ def qubo_coefficients() -> tuple[float, np.ndarray, dict[tuple[int, int], float]
 
     weights = [action.effort for action in ACTIONS] + list(SLACK_WEIGHTS)
     constant = -BUDGET
-    offset += PENALTY * (constant ** 2)
+    offset += penalty * (constant ** 2)
 
     # Expand penalty * (constant + sum_i weights_i*x_i)^2.
-    # Binary identity x_i^2 = x_i gives the diagonal contribution below.
+    # For binary variables, x_i**2 = x_i.
     for i, weight_i in enumerate(weights):
-        linear[i] += PENALTY * (weight_i ** 2 + 2 * constant * weight_i)
+        linear[i] += penalty * (
+            weight_i ** 2 + 2 * constant * weight_i
+        )
+
         for j in range(i + 1, N_VARIABLES):
             weight_j = weights[j]
             key = (i, j)
-            quadratic[key] = quadratic.get(key, 0.0) + PENALTY * 2 * weight_i * weight_j
+            quadratic[key] = (
+                quadratic.get(key, 0.0)
+                + penalty * 2 * weight_i * weight_j
+            )
 
+    # Penalize selecting incompatible actions.
     for i, j in CONFLICTS:
         key = (i, j) if i < j else (j, i)
-        quadratic[key] = quadratic.get(key, 0.0) + PENALTY
+        quadratic[key] = quadratic.get(key, 0.0) + penalty
 
     return offset, linear, quadratic
 
 
-def evaluate_qubo(bits: Iterable[int]) -> float:
+def evaluate_qubo(
+    bits: Iterable[int],
+    penalty: float = PENALTY,
+) -> float:
     """Evaluate the QUBO directly, using action and slack bits in qubit-index order."""
     values = [int(bit) for bit in bits]
     if len(values) != N_VARIABLES or any(bit not in (0, 1) for bit in values):
         raise ValueError(f"Expected {N_VARIABLES} binary values.")
-    offset, linear, quadratic = qubo_coefficients()
+    offset, linear, quadratic = qubo_coefficients(penalty)
     score = offset + float(np.dot(linear, values))
     for (i, j), coefficient in quadratic.items():
         score += coefficient * values[i] * values[j]
@@ -153,11 +167,11 @@ def exact_classical_solution() -> dict[str, object]:
     return best
 
 
-def qubo_to_hamiltonian():
+def qubo_to_hamiltonian(penalty: float = PENALTY):
     """Map the QUBO to a SparsePauliOp using x_i=(I-Z_i)/2."""
     from qiskit.quantum_info import SparsePauliOp
 
-    offset, linear, quadratic = qubo_coefficients()
+    offset, linear, quadratic = qubo_coefficients(penalty)
     identity_coefficient = offset + float(np.sum(linear)) / 2.0
     z_coefficients = -linear / 2.0
 
