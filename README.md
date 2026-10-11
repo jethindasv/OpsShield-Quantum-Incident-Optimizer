@@ -1,4 +1,23 @@
 # OpsShield — Quantum Incident Response Optimizer
+# OpsShield — Quantum Incident Response Optimizer
+
+## Project Metadata
+
+- **Project Title:** OpsShield — Quantum Incident Response Optimizer
+- **Team Name:** [Jethindas V]
+- **Chosen Track:** Track 2 — Open-Domain Optimization & Real-World Solvers
+- **Video Presentation Link:** [Watch the OpsShield presentation](https://drive.google.com/file/d/1DlkGHTkU1ygNpyaQcI3794S6Wsx_5Ga3/view?usp=drive_link)
+- **Live Demo Timestamp in Video:** [06:40]
+
+### Team Members (Maximum 4)
+
+| Name | Email | GitHub Username |
+|---|---|---|
+| [Jethindas V] | [jethindas25imcs11007@iiitkottayam.ac.in] | [@jethindasv] |
+
+
+---
+
 
 **Tagline:** When everything cannot be fixed at once, fix what matters most.
 
@@ -77,6 +96,40 @@ python -m pytest -q
 ```
 
 The pure problem-model tests do not require IBM account credentials. Start with local simulation; hardware is optional and should only be attempted once the model and simulator run correctly.
+## Experimental Results
+
+All experiments below use a local Qiskit statevector simulator, QAOA depth 1, a maximum of 60 optimizer iterations, and 4,096 shots per run unless otherwise noted.
+
+### QUBO penalty sweep
+
+The random seed was fixed at 7 while the constraint-penalty coefficient was varied.
+
+| Penalty | Feasible samples | Feasibility yield | Best feasible benefit |
+|---:|---:|---:|---:|
+| 45 | 337 / 4096 | 8.23% | 28 |
+| 90 | 326 / 4096 | 7.96% | 28 |
+| 120 | 341 / 4096 | 8.33% | 28 |
+| 144 | 464 / 4096 | 11.33% | 28 |
+
+### Repeatability check
+
+With penalty 144, three random seeds produced the following feasibility yields:
+
+| Seed | Feasibility yield | Best feasible benefit |
+|---:|---:|---:|
+| 7 | 11.33% | 28 |
+| 21 | 6.8% | 28 |
+| 42 | 6.7% | 28 |
+
+The exact classical optimum is a benefit score of 28, achieved by selecting A1, A3, A5 and A6 within the effort budget. All reported QAOA runs sampled this optimum at least once.
+
+### Interpretation and limitations
+
+Penalty 144 had the highest feasibility yield in the four-value penalty sweep using seed 7. The repeatability results show that the yield varies with the random seed; these experiments do not establish a universally optimal penalty.
+
+The problem uses synthetic action benefits, effort requirements and compatibility constraints. All quantum experiments reported here used a local statevector simulator, not a physical quantum processor. The results do not demonstrate quantum advantage over classical optimization.
+
+The exact classical solver remains the reference for solution quality on this small instance. Larger problem sizes, additional seeds, and further benchmarking are needed to assess scalability and robustness.
 
 ## Suggested submission contents
 
