@@ -41,7 +41,7 @@ SLACK_WEIGHTS: tuple[int, ...] = (1, 2, 4)
 # These conflicts model actions that cannot share this change window.
 CONFLICTS: tuple[tuple[int, int], ...] = ((0, 1), (2, 3))
 # Each violated hard constraint costs more than the total possible benefit.
-PENALTY = sum(action.benefit for action in ACTIONS) + 100
+PENALTY = sum(action.benefit for action in ACTIONS) + 1
 N_ACTIONS = len(ACTIONS)
 N_SLACK = len(SLACK_WEIGHTS)
 N_VARIABLES = N_ACTIONS + N_SLACK
